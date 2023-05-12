@@ -1,25 +1,49 @@
 from shapely.geometry import Point, Polygon
-from geopy.distance import geodesic
+import configparser
+import ast
+import pandas as pd
 
-def point_inside_polygon(point, polygon_coords):
-    # Create a shapely Point object from the given coordinates
-    point = Point(point[0], point[1])
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-    # Create a shapely Polygon object from the given list of coordinates
-    polygon = Polygon(polygon_coords)
+coordinate =[]
+inside_outside = []
+purpleCoords = ast.literal_eval(config['DEFAULT']['purpleCoords'])
+yellowCoords = ast.literal_eval(config['DEFAULT']['yellowCoords'])
+redCoords = ast.literal_eval(config['DEFAULT']['redCoords'])
+blueCoords = ast.literal_eval(config['DEFAULT']['blueCoords'])
 
-    # Check if the point is within the polygon
-    return point.within(polygon)
+def point_inside_polygon(point, purpleCoords, yellowCoords, redCoords, blueCoords):
+        point = Point(point[0], point[1])
 
-# Define your point and polygon coordinates
-point = (38.618190, 27.365351)  # Example point (longitude, latitude)
-polygon_coords = [
-    (38.618598, 27.365637),
-    (38.618619, 27.365820),
-    (38.618482, 27.365860),
-    (38.618469, 27.365703)
-]  # Example polygon (list of longitude, latitude tuples)
+        purplepolygon = Polygon(purpleCoords)
+        yellowpolygon = Polygon(yellowCoords)
+        redpolygon = Polygon(redCoords)
+        bluepolygon = Polygon(blueCoords)
 
-result = point_inside_polygon(point, polygon_coords)
+        if purplepolygon.contains(point):
+            return 'Mor kisimda.'
+        elif yellowpolygon.contains(point):
+            return 'Sari kisimda.'
+        elif redpolygon.contains(point):
+            return 'Kirmizi kisimda.'
+        elif bluepolygon.contains(point):
+            return 'Mavi kisimda.'
+        else:
+            return 'Belirlenen bolgelerde degil.'
+def main():
+    df = pd.read_csv('data.csv')
+    for index, row in df.iterrows():
+        latitude = row['Latitude']
+        longitude = row['Longitude']
+        coordinate =(latitude , longitude)
+        print(f"Satır {index}: Kolon1 = {latitude}, Kolon2 = {longitude}")
+        result = point_inside_polygon(coordinate, purpleCoords, yellowCoords, redCoords, blueCoords)
+        inside_outside.append(result)
+        print("Is the point inside the polygon?", result)
+    df['inside_outside'] = inside_outside
+    df.to_csv('inside_outside_result.csv', index=False)
 
-print("Is the point inside the polygon?", result)
+
+# if __name__ == '__main__':
+#     main()
