@@ -15,11 +15,11 @@ def query(engine):
                             KUMNO, PARKUMNO, MUSTERI, KUMAS, MIKTAR,
                             TAMIR_NEDENI, ARGE_yabby, BITTI, yabby_kod,
                             CREATEDATE,	Yabby_Aktif, ENDDATE
-                            FROM ABP.dbo.v_parkum_yabby where Yabby_Aktif = 1;""")
+                            FROM ABP.dbo.v_parkum_yabby where Yabby_Aktif = 1
+                            and yabby_kod is not null;""")
             result = connection.execute(sql_query)
             results = result.fetchall()
             df = pd.DataFrame(results)
-            print(df)
             results_cleaned = [tuple(element.strip() if isinstance(element, str) else element for element in tup) for tup in results]
             df = pd.DataFrame(results_cleaned, columns=['CINSI', 'SIPNO', 'SIRA', 'PARKAYNO', 
                                                         'KUMNO', 'PARKUMNO', 'MUSTERI', 'KUMAS', 'MIKTAR',

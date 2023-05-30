@@ -9,7 +9,7 @@ import math
 from dotenv import load_dotenv
 
 def main(data,globaltime):
-  logperiod = float(1440)
+  logperiod = float(1)
   minutes = math.floor(logperiod)
   seconds = (logperiod - minutes) * 60 
   load_dotenv()
@@ -114,7 +114,7 @@ def main(data,globaltime):
 
   df = pd.DataFrame(rows)
   df = df.drop_duplicates(subset=['DataLogged'], keep='first')
-  # df.to_csv('data.csv', index=False)
+  df.to_csv('data.csv', index=False)
   try:
     merged_dataframe = pd.merge(df, data, on='yabby_kod', how='inner')
     flag = True
