@@ -13,14 +13,18 @@ def query(engine):
         try:
             sql_query = text("""SELECT CINSI, SIPNO, SIRA, PARKAYNO, 
                             KUMNO, PARKUMNO, MUSTERI, KUMAS, MIKTAR,
-                            TAMIR_NEDENI, ARGE_yabby, BITTI, yabby_kod
+                            TAMIR_NEDENI, ARGE_yabby, BITTI, yabby_kod,
                             CREATEDATE,	Yabby_Aktif, ENDDATE
                             FROM ABP.dbo.v_parkum_yabby where Yabby_Aktif = 1;""")
             result = connection.execute(sql_query)
             results = result.fetchall()
             df = pd.DataFrame(results)
+            print(df)
             results_cleaned = [tuple(element.strip() if isinstance(element, str) else element for element in tup) for tup in results]
-            df = pd.DataFrame(results_cleaned, columns=['CINSI', 'SIPNO', 'SIRA', 'PARKAYNO', 'KUMNO', 'PARKUMNO', 'MUSTERI', 'KUMAS', 'MIKTAR', 'TAMIR_NEDENI', 'ARGE_yabby', 'BITTI', 'yabby_kod','CREATEDATE', 'Yabby_Aktif', 'ENDDATE'])
+            df = pd.DataFrame(results_cleaned, columns=['CINSI', 'SIPNO', 'SIRA', 'PARKAYNO', 
+                                                        'KUMNO', 'PARKUMNO', 'MUSTERI', 'KUMAS', 'MIKTAR',
+                                                        'TAMIR_NEDENI', 'ARGE_yabby', 'BITTI', 'yabby_kod',
+                                                        'CREATEDATE',	'Yabby_Aktif', 'ENDDATE'])
             connect_flag = True
             return df,connect_flag
         except Exception as e:
@@ -42,7 +46,7 @@ def connect_mssql():
         return engine , connect_flag 
     except Exception as e:
         connect_flag = False
-        print("The error is connect_mssql: ",e)
+        print("The error is connect_mssql_connect: ",e)
         return dummy_conn ,connect_flag
 
 def connect_append_postgresql(df):

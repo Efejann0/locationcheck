@@ -6,6 +6,7 @@ import time
 import datetime
 
 globaltime = datetime.datetime.now()
+flag = False
 
 while True:
     cnxn,connect_flag = database.connect_mssql()
@@ -13,7 +14,7 @@ while True:
         break
 
 def main():
-    global globaltime
+    global globaltime , flag
     database_data,connect_flag = database.query(cnxn)
     if connect_flag == True:
         merge_apidata, flag ,globaltime= apicollect.main(database_data,globaltime)

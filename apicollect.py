@@ -9,7 +9,7 @@ import math
 from dotenv import load_dotenv
 
 def main(data,globaltime):
-  logperiod = float(1)
+  logperiod = float(1440)
   minutes = math.floor(logperiod)
   seconds = (logperiod - minutes) * 60 
   load_dotenv()
