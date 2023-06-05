@@ -5,13 +5,12 @@ from urllib.parse import quote
 import pandas as pd
 import os
 import pytz
-import math
 from dotenv import load_dotenv
 
 def main(data,globaltime):
-  logperiod = float(1)
-  minutes = math.floor(logperiod)
-  seconds = (logperiod - minutes) * 60 
+  # logperiod = float(1)
+  # minutes = math.floor(logperiod)
+  # seconds = (logperiod - minutes) * 60 
   load_dotenv()
   reqUrl = os.getenv("ReqUrlLogin")
   rows = []
@@ -35,7 +34,7 @@ def main(data,globaltime):
     print("The error is login: ",e)
     merged_dataframe = pd.DataFrame()
     flag = False
-    return merged_dataframe ,flag, globaltime
+    return merged_dataframe ,flag
   
   response = json.loads(response.text)
   AccessToken = response["Data"]["AccessToken"]
@@ -55,15 +54,15 @@ def main(data,globaltime):
     print("The error is ApiToken: ",e)
     merged_dataframe = pd.DataFrame()
     flag = False
-    return merged_dataframe ,flag, globaltime
+    return merged_dataframe ,flag
   
   response = json.loads(response.text)
   companyID = response["Data"]
   companyID = companyID[0]["Id"]
 
   #-------------------------------------
-  to_iso_date_time = globaltime
-  from_iso_date_time = to_iso_date_time - datetime.timedelta(minutes=minutes, seconds=seconds)
+  from_iso_date_time = globaltime
+  to_iso_date_time = datetime.datetime.now()
 
   print(from_iso_date_time,' ', to_iso_date_time)
 
@@ -94,7 +93,7 @@ def main(data,globaltime):
         print("The error is device location: ",e)
         merged_dataframe = pd.DataFrame()
         flag = False
-        return merged_dataframe ,flag, globaltime
+        return merged_dataframe ,flag
 
     response = response.json()
 
@@ -118,10 +117,8 @@ def main(data,globaltime):
   try:
     merged_dataframe = pd.merge(df, data, on='yabby_kod', how='inner')
     flag = True
-    globaltime = globaltime + datetime.timedelta(minutes=minutes, seconds=seconds)
-    return merged_dataframe ,flag, globaltime
+    return merged_dataframe ,flag
   except KeyError:
     merged_dataframe = pd.DataFrame()
     flag = False
-    globaltime = globaltime + datetime.timedelta(minutes=minutes, seconds=seconds)
-    return merged_dataframe ,flag, globaltime
+    return merged_dataframe ,flag

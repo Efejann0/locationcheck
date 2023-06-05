@@ -25,7 +25,7 @@ def query(engine):
                                                         'KUMNO', 'PARKUMNO', 'MUSTERI', 'KUMAS', 'MIKTAR',
                                                         'TAMIR_NEDENI', 'ARGE_yabby', 'BITTI', 'yabby_kod',
                                                         'CREATEDATE',	'Yabby_Aktif', 'ENDDATE'])
-            connect_flag = True
+            connect_flag = Truez
             return df,connect_flag
         except Exception as e:
             connect_flag = False
@@ -77,6 +77,34 @@ def connect_append_postgresql(df):
     except (Exception, Error) as error:
         connection.rollback()
         print("Error while appending data to the table:", error)
+    
+    cursor.close()
+    connection.close()
+
+def take_last_append_date_postgresql():
+    try:
+        connection = psycopg2.connect(
+            user=os.getenv('PG_DB_USERNAME'),
+            password=os.getenv('PG_DB_PASSWORD'),
+            host=os.getenv('PG_DB_SERVER'),
+            port=os.getenv('PG_DB_PORT'),
+            database=os.getenv('PG_DB_DATABASE')
+        )
+        cursor = connection.cursor()
+        
+    except (Exception, Error) as error:
+        print("Error while connecting to PostgreSQL:", error)
+    
+    try:
+    
+        cursor.execute("SELECT datalogged FROM mind4machine.textracklocationcheck order by datalogged desc limit 1;")
+        temp = cursor.fetchall()
+        df = pd.DataFrame(temp)
+        mapping = {df.columns[0]:'datalogged'}
+        df = df.rename(columns=mapping)
+        return int(df['datalogged'].loc[df.index[0]])
+    except (Exception, Error) as error:
+        print("Error while connecting to PostgreSQL", error)
     
     cursor.close()
     connection.close()
