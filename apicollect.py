@@ -112,21 +112,25 @@ def main(data,last_append_dates):
 
       response = response.json()
       # print(response)
-    try:
+  try:
       for source in response['Data']['Source']:
-        row = {
-            'yabby_kod': source['AssetId'],
-            'Asset': source['Asset'],
-            'DataLogged': source['DataLogged'],
-            'Latitude': source['Latitude'],
-            'Longitude': source['Longitude'],
-            'PositionAccuracy': source['PositionAccuracy'],
-            'LogReason': source['LogReason'],
-            'Battery': source['Battery']
-            }
-        rows.append(row)
-    except Exception as e:
-      print("response['Data']['Source']: ",e)
+          row = {
+              'yabby_kod': source['AssetId'],
+              'Asset': source['Asset'],
+              'DataLogged': source['DataLogged'],
+              'Latitude': source['Latitude'],
+              'Longitude': source['Longitude'],
+              'PositionAccuracy': source['PositionAccuracy'],
+              'LogReason': source['LogReason'],
+              'Battery': source['Battery']
+          }
+          
+          if source['Latitude'] and source['Longitude']:
+              rows.append(row)
+          else:
+              print("Skipping empty latitude/longitude.")
+  except Exception as e:
+      print("response['Data']['Source']: ", e)
 
   df = pd.DataFrame(rows)
   df = df.drop_duplicates(subset=['DataLogged'], keep='first')

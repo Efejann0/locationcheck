@@ -32,7 +32,7 @@ def point_inside_polygon(point, purpleCoords, yellowCoords, redCoords, blueCoord
             return 4 #'Mavi kisimda.'
         else:
             return -1
-def main(merge_apidata):
+def main(merge_apidata,flag):
     global zone_check
     df = merge_apidata.copy(deep=True)
     df = df.drop_duplicates(subset=['DataLogged','PARKUMNO'], keep='first')
@@ -46,5 +46,11 @@ def main(merge_apidata):
     zone_check = []
     df.to_csv('zone_check_result.csv', index=False)
     database.connect_append_postgresql(df)
-    last_append_date = database.take_last_append_date_postgresql()
-    return last_append_date
+    if flag == 'start':
+        flag = 'end'
+        last_append_date = database.take_last_end_date_postgresql
+        return last_append_date, flag
+    elif flag == 'end':
+        flag = 'start'
+        last_append_date = database.take_last_append_date_postgresql()
+        return last_append_date, flag
