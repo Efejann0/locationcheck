@@ -33,7 +33,9 @@ def point_inside_polygon(point, purpleCoords, yellowCoords, redCoords, blueCoord
         else:
             return -1
 def main(merge_apidata):
+    global zone_check
     df = merge_apidata.copy(deep=True)
+    df = df.drop_duplicates(subset=['DataLogged','PARKUMNO'], keep='first')
     for index, row in df.iterrows():
         latitude = row['Latitude']
         longitude = row['Longitude']
@@ -41,6 +43,7 @@ def main(merge_apidata):
         result = point_inside_polygon(coordinate, purpleCoords, yellowCoords, redCoords, blueCoords)
         zone_check.append(result)
     df['zone_check'] = zone_check
+    zone_check = []
     df.to_csv('zone_check_result.csv', index=False)
     database.connect_append_postgresql(df)
     last_append_date = database.take_last_append_date_postgresql()

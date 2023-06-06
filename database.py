@@ -25,7 +25,7 @@ def query(engine):
                                                         'KUMNO', 'PARKUMNO', 'MUSTERI', 'KUMAS', 'MIKTAR',
                                                         'TAMIR_NEDENI', 'ARGE_yabby', 'BITTI', 'yabby_kod',
                                                         'CREATEDATE',	'Yabby_Aktif', 'ENDDATE'])
-            connect_flag = Truez
+            connect_flag = True
             return df,connect_flag
         except Exception as e:
             connect_flag = False
@@ -97,12 +97,16 @@ def take_last_append_date_postgresql():
     
     try:
     
-        cursor.execute("SELECT datalogged FROM mind4machine.textracklocationcheck order by datalogged desc limit 1;")
+        cursor.execute("""SELECT yabby_kod, MAX(datalogged) AS max_datalogged
+                            FROM mind4machine.textracklocationcheck
+                            GROUP BY yabby_kod
+                            ORDER BY max_datalogged DESC;""")
         temp = cursor.fetchall()
         df = pd.DataFrame(temp)
-        mapping = {df.columns[0]:'datalogged'}
-        df = df.rename(columns=mapping)
-        return int(df['datalogged'].loc[df.index[0]])
+        mapping = {df.columns[0]:'yabby_kod', df.columns[1]:'datalogged'}
+        datalogged = df.rename(columns=mapping)
+        datalogged['datalogged'] = pd.to_datetime(datalogged['datalogged']) + pd.Timedelta(seconds=1)
+        return datalogged
     except (Exception, Error) as error:
         print("Error while connecting to PostgreSQL", error)
     

@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+Iolocate_API Manual_v1.1.pdf
+
 # C extensions
 *.so
 
