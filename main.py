@@ -20,7 +20,7 @@ def main():
         merge_apidata, flag= apicollect.main(database_data,last_append_dates)
     if flag == True:
         last_append_dates= locationcheck.main(merge_apidata)
-        
+    print("Bir dongu tamamlandi")  
     # eliar_database_enddate = database.eliar_enddate()
     # df_factory_enddate = database.factory_enddate(cnxn)
     # database.merge_and_update_enddate(eliar_database_enddate, df_factory_enddate)

@@ -9,8 +9,8 @@ connect_flag = False
 dummy_conn = 'just for return'
 
 def query(engine):
-    with engine.connect() as connection:
-        try:
+    try:
+        with engine.connect() as connection:
             sql_query = text("""SELECT CINSI, SIPNO, SIRA, PARKAYNO, 
                             KUMNO, PARKUMNO, MUSTERI, KUMAS, MIKTAR,
                             TAMIR_NEDENI, ARGE_yabby, BITTI, yabby_kod,
@@ -27,10 +27,10 @@ def query(engine):
                                                         'CREATEDATE',	'Yabby_Aktif', 'ENDDATE'])
             connect_flag = True
             return df,connect_flag
-        except Exception as e:
-            connect_flag = False
-            print("The error is connect_mssql: ",e)
-            return dummy_conn ,connect_flag
+    except Exception as e:
+        connect_flag = False
+        print("The error is connect_mssql: ",e)
+        return dummy_conn ,connect_flag
 def connect_mssql():
     load_dotenv()
     server = os.getenv('DB_SERVER')
