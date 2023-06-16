@@ -21,9 +21,9 @@ def main():
     if flag == True:
         last_append_dates= locationcheck.main(merge_apidata)
         
-    eliar_database_enddate = database.eliar_enddate()
-    df_factory_enddate = database.factory_enddate(cnxn)
-    database.merge_and_update_enddate(eliar_database_enddate, df_factory_enddate)
+    # eliar_database_enddate = database.eliar_enddate()
+    # df_factory_enddate = database.factory_enddate(cnxn)
+    # database.merge_and_update_enddate(eliar_database_enddate, df_factory_enddate)
 main()
 schedule.every(55).seconds.do(main)
 

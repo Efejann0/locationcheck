@@ -131,7 +131,7 @@ def eliar_enddate():
             cursor.execute("""Select yabby_kod,  max(datalogged) as datalogged,
                              parkayno, kumno, parkumno
                             FROM mind4machine.textracklocationcheck 
-                            where Yabby_Aktif = False and enddate is null
+                            where Yabby_Aktif = True and enddate is null
                             group by yabby_kod , parkayno, kumno, parkumno order by datalogged desc;""")
             temp = cursor.fetchall()
             df = pd.DataFrame(temp)
